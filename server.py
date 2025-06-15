@@ -17,18 +17,15 @@ from dotenv import load_dotenv
 try:
     from mcp_google_maps.maps_tools import GoogleMapsTools
 except ImportError:
-    # If running as a standalong script or package not installed
-    try:
-        pass
-    except ImportError:
-        pass
+    print("Could not import GoogleMapsTools")
+    exit(1)
 
 # Load environment variables
 load_dotenv()
 
 
 # Initialize Fast mcp server
-mcp = FastMCP("Google Maps MCP Server")     # is this how you pass in the server name parameter
+mcp = FastMCP("maps")     # is this how you pass in the server name parameter
 
 # Global Google Maps tools instance
 maps_tools: Optional[GoogleMapsTools] = None
@@ -94,7 +91,7 @@ def search_nearby(
         
         return {
             "location": location,
-            "places": formatted_place,
+            "places": formatted_places,
             "total_results": len(formatted_places)
         }
     
@@ -334,7 +331,7 @@ def validate_api_key() -> bool:
     except Exception:
         return False
     
-async def main():
+def main():
     """Main function to run the server."""
     global maps_tools
     
@@ -349,18 +346,18 @@ async def main():
         else:
             print("✅ Google Maps API key validated successfully.")
         
-        print("🗺️  Starting MCP Google Maps Server...")
-        print("🚀 Server is ready to receive requests!")
+        print("Starting MCP Google Maps Server...")
+        print("Server is ready to receive requests!")
         
         # Run the FastMCP server
-        await mcp.run()
+        mcp.run()
         
     except KeyboardInterrupt:
-        print("🛑 Server stopped by user")
+        print("Server stopped by user")
     except Exception as error:
-        print(f"❌ Server error: {error}")
+        print(f"Server error: {error}")
         raise
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
